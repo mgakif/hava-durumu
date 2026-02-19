@@ -6,15 +6,9 @@ export const fetchWeatherFromGemini = async (
   location: AppLocation,
   unit: Unit
 ): Promise<WeatherData> => {
-  // Browser ortamında process.env bazen tanımsız olabilir, bu yüzden güvenli erişim sağlıyoruz.
-  const env = (window as any).process?.env || {};
-  const apiKey = env.API_KEY || (typeof process !== 'undefined' ? process.env.API_KEY : null);
-  
-  if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-    throw new Error("API_KEY bulunamadı. Lütfen Vercel Environment Variables kısmından API_KEY ekleyin.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+  // Sistem talimatlarına uygun olarak doğrudan process.env.API_KEY kullanılır.
+  // Vite config içindeki 'define' sayesinde bu değer buraya ulaşacaktır.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const locationString = location.city 
     ? location.city 
