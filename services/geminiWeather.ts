@@ -6,7 +6,13 @@ export const fetchWeatherFromGemini = async (
   location: AppLocation,
   unit: Unit
 ): Promise<WeatherData> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+    throw new Error("Vercel üzerinde API_KEY ayarlanmamış. Lütfen Environment Variables kısmından API_KEY ekleyin.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   
   const locationString = location.city 
     ? location.city 
@@ -38,26 +44,23 @@ export const fetchWeatherFromGemini = async (
 
   Search for the most recent data to be accurate.`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
-    config: {
-      tools: [{ googleSearch: {} }],
-    },
-  });
-
-  const text = response.text || "";
-  
-  // Extract JSON from potential markdown wrappers
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error("Failed to parse weather data from Gemini.");
-  }
-
   try {
-    const parsedData = JSON.parse(jsonMatch[0]);
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        tools: [{ googleSearch: {} }],
+      },
+    });
+
+    const text = response.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
     
-    // Extract grounding sources
+    if (!jsonMatch) {
+      throw new Error("Gemini geçerli bir hava durumu verisi döndüremedi.");
+    }
+
+    const parsedData = JSON.parse(jsonMatch[0]);
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     const sources = groundingChunks
       .filter((chunk: any) => chunk.web)
@@ -68,10 +71,10 @@ export const fetchWeatherFromGemini = async (
 
     return {
       ...parsedData,
-      sources,
+      sources: sources || [],
     };
-  } catch (err) {
-    console.error("Parse Error:", err, text);
-    throw new Error("Failed to structure weather data.");
+  } catch (err: any) {
+    console.error("Gemini Weather Error:", err);
+    throw new Error(err.message || "Hava durumu verisi alınırken bir hata oluştu.");
   }
 };
