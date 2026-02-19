@@ -1,0 +1,7 @@
+{
+  "name": "SkyCast MVP",
+  "description": "A production-ready weather application featuring real-time data powered by Gemini, GPS location support, and manual city selection.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
