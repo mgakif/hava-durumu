@@ -4,7 +4,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SkyCast MVP</title>
+    <title>SkyCast MVP | AI-Powered Weather</title>
+    <meta name="description" content="Gemini AI destekli, gerçek zamanlı ve hassas hava durumu tahmin uygulaması." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SkyCast MVP | AI-Powered Weather" />
+    <meta property="og:description" content="Gemini AI ile güçlendirilmiş modern hava durumu deneyimi." />
+    <meta property="og:image" content="https://skycast-mvp.vercel.app/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="SkyCast MVP | AI-Powered Weather" />
+    <meta property="twitter:description" content="Gemini AI ile güçlendirilmiş modern hava durumu deneyimi." />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,29 +25,37 @@
     <style>
       body {
         font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        background: radial-gradient(circle at top right, #1e293b, #0f172a);
         color: white;
         min-height: 100vh;
+        overflow-x: hidden;
       }
       .glass {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px border rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.42.0"
-  }
-}
-</script>
-</head>
+    <script type="importmap">
+    {
+      "imports": {
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react": "https://esm.sh/react@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
+        "@google/genai": "https://esm.sh/@google/genai@^1.42.0"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
   </body>

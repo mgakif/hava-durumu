@@ -16,7 +16,9 @@ import {
   Navigation,
   X,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 
 export const WeatherIcon = ({ condition, size = 24, className = "" }: { condition: string, size?: number, className?: string }) => {
@@ -31,5 +33,6 @@ export const WeatherIcon = ({ condition, size = 24, className = "" }: { conditio
 
 export { 
   Cloud, Sun, CloudRain, CloudLightning, Snowflake, Wind, Droplets, 
-  Thermometer, MapPin, Settings, RefreshCw, Search, Navigation, X, ExternalLink, ChevronRight
+  Thermometer, MapPin, Settings, RefreshCw, Search, Navigation, X, ExternalLink, ChevronRight,
+  AlertCircle, Info
 };

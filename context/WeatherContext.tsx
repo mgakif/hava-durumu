@@ -3,6 +3,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { WeatherData, AppLocation, Unit, WeatherContextType } from '../types';
 import { fetchWeatherFromGemini } from '../services/geminiWeather';
 
+const CACHE_KEY = 'skycast_weather_cache';
+const CACHE_TTL = 15 * 60 * 1000; // 15 dakika
+
 const WeatherContext = createContext<WeatherContextType | undefined>(undefined);
 
 export const WeatherProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -30,14 +33,33 @@ export const WeatherProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem('skycast_unit', u);
   };
 
-  const refreshWeather = useCallback(async () => {
+  const refreshWeather = useCallback(async (force = false) => {
+    const cacheId = `${JSON.stringify(location)}_${unit}`;
+    
+    if (!force) {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp, id } = JSON.parse(cached);
+        if (id === cacheId && Date.now() - timestamp < CACHE_TTL) {
+          setWeather(data);
+          return;
+        }
+      }
+    }
+
     setLoading(true);
     setError(null);
     try {
       const data = await fetchWeatherFromGemini(location, unit);
       setWeather(data);
+      // Cache'e yaz
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+        data,
+        timestamp: Date.now(),
+        id: cacheId
+      }));
     } catch (err: any) {
-      setError(err.message || "Failed to fetch weather data.");
+      setError(err.message || "Unable to fetch weather. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -56,7 +78,7 @@ export const WeatherProvider: React.FC<{ children: ReactNode }> = ({ children })
       unit, 
       setUnit: updateUnit, 
       setLocation, 
-      refreshWeather 
+      refreshWeather: () => refreshWeather(true) 
     }}>
       {children}
     </WeatherContext.Provider>
